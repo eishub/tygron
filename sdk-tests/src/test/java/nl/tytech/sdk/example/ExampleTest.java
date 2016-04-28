@@ -7,6 +7,9 @@ import static org.junit.Assert.assertTrue;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.util.Properties;
 
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -77,21 +80,43 @@ public class ExampleTest {
 		assertNull(result, result);
 
 		/**
-		 * Enter user password
+		 * Find user and password through given through maven environment variables
 		 */
+		String user_var = null;
+		String pwd_var = null;
+		BufferedReader in = new BufferedReader(new FileReader("target/app.properties"));
+		String line;
+		while((line = in.readLine()) != null){
+			if(line.contains("=") && !line.startsWith("#")){
+				String[] splittedline = line.split("=");
+				if (splittedline[0].equals("user")){
+					user_var = splittedline[1];
+				} else if(splittedline[0].equals("pwd")){
+					pwd_var = splittedline[1];
+				}
+			}
+		}
+		in.close();
+		
+		/**
+		 * Enter user password if there was nothing found
+		 */
+		if(user_var == null || user_var.equals("undefined") || pwd_var == null || pwd_var.equals("undefined") ){
+			JPanel namepasspanel = new JPanel(new BorderLayout());
+			JTextField name = new JTextField(20);
+			JPasswordField pwd = new JPasswordField(20);
+			namepasspanel.add(makeRow("name:", name), BorderLayout.NORTH);
+			namepasspanel.add(makeRow("password:", pwd), BorderLayout.CENTER);
+			JOptionPane.showConfirmDialog(null, namepasspanel, "Enter Name and Password", JOptionPane.OK_CANCEL_OPTION);
 
-		JPanel namepasspanel = new JPanel(new BorderLayout());
-		JTextField name = new JTextField(20);
-		JPasswordField pwd = new JPasswordField(20);
-		namepasspanel.add(makeRow("name:", name), BorderLayout.NORTH);
-		namepasspanel.add(makeRow("password:", pwd), BorderLayout.CENTER);
-		JOptionPane.showConfirmDialog(null, namepasspanel, "Enter Name and Password", JOptionPane.OK_CANCEL_OPTION);
-
-		ServicesManager.setSessionLoginCredentials(name.getText(), new String(pwd.getPassword()));
+			ServicesManager.setSessionLoginCredentials(name.getText(), new String(pwd.getPassword()));
+		} else {
+			ServicesManager.setSessionLoginCredentials(user_var, pwd_var);
+		}
+		
 		User user = ServicesManager.getMyUserAccount();
-
 		assertNotNull(user);
-		assertEquals(user.getUserName(), name.getText());
+		//assertEquals(user.getUserName(), name.getText());
 
 		assertTrue("You need to be at least EDITOR to run these tests!",
 				user.getMaxAccessLevel().ordinal() >= AccessLevel.EDITOR.ordinal());

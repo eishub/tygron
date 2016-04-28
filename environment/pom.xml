@@ -1,13 +1,16 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-	<modelVersion>4.0.0</modelVersion>
+	<modelVersion>4.0.0</modelVersion>	
 
+		
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<!-- name of the main project on eishub. -->
 		<environmentname>tygron</environmentname>
 		<mainclass>tygronenv.EisEnv</mainclass>
+		<user>cool</user>
+		<pwd>dude</pwd>
 	</properties>
 
 	<groupId>eishub</groupId>
@@ -83,7 +86,15 @@
 	</dependencies>
 
 	<build>
+	<resources>
+	<resource>
+	<directory>src/test/resources</directory>
+	<filtering>true</filtering>
+	</resource>
+	</resources>
+	
 		<plugins>
+		
 			<!-- running tygron sdk code (for the tests) requires java 1.8 -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -94,7 +105,7 @@
 					<target>1.8</target>
 				</configuration>
 			</plugin>
-
+				
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-source-plugin</artifactId>
