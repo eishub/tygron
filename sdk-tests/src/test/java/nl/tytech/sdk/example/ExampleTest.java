@@ -101,7 +101,7 @@ public class ExampleTest {
 		/**
 		 * Enter user password if there was nothing found
 		 */
-		if(user_var == null || pwd_var == null ){
+		if(user_var == null || user_var.equals("undefined") || pwd_var == null || pwd_var.equals("undefined") ){
 			JPanel namepasspanel = new JPanel(new BorderLayout());
 			JTextField name = new JTextField(20);
 			JPasswordField pwd = new JPasswordField(20);
