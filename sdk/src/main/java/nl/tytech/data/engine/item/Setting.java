@@ -42,19 +42,19 @@ public class Setting extends AbstractSetting<Setting.Type> {
         /**
          * Currently active game level.
          */
-        @DoNotSaveToInit
+        @DoNotSaveToInit //
         ACTIVE_LEVEL(Integer.class, "0"),
 
         /**
          * When true players can interact with the game..
          */
-        @DoNotSaveToInit
+        @DoNotSaveToInit //
         ALLOW_USER_INTERACTION(Boolean.class, "true"),
 
         /**
          * Allowed raise of the
          */
-        @Deprecated
+        @Deprecated //
         ALLOWED_WATER_LEVEL_INCREASE(Double.class, "0.3"),
 
         /** Basic panels that are not triggered by special functionality. */
@@ -63,26 +63,26 @@ public class Setting extends AbstractSetting<Setting.Type> {
         /**
          * Beamer Layer (Which layer should be displayed by the Beamer (HEAT, QUALITY_OF_LIFE)
          */
-        @DoNotSaveToInit
-        @Deprecated
+        @DoNotSaveToInit //
+        @Deprecated //
         BEAMER_LAYER(OverlayType.class, "OWNERSHIP"),
 
         /**
          * Beamer Overlay ID
          */
-        @DoNotSaveToInit
+        @DoNotSaveToInit //
         BEAMER_ITEM_ID(Integer.class, "-1"),
 
         /**
          * Ordinal of active beamer score panel
          */
-        @DoNotSaveToInit
+        @DoNotSaveToInit //
         BEAMER_SCORE_PANEL(BeamerPanelEnum.class, "MAP_CURRENT"),
 
         /**
          * Ordinal of active beamer panel
          */
-        @DoNotSaveToInit
+        @DoNotSaveToInit //
         BEAMER_VIEW(ViewEnum.class, ViewEnum.BEAMER_WELCOME.name()),
 
         /**
@@ -173,13 +173,13 @@ public class Setting extends AbstractSetting<Setting.Type> {
         /**
          * Team name
          */
-        @DoNotSaveToInit
+        @DoNotSaveToInit //
         TEAM_NAME(String.class, ""),
 
         /**
          * Replaced by map width in meters
          */
-        @Deprecated
+        @Deprecated //
         TILEMAP_WIDTH(Integer.class, "0"),
 
         /**
@@ -195,7 +195,7 @@ public class Setting extends AbstractSetting<Setting.Type> {
         /**
          * Gives progress feedback for verifier TODO: maybe move the editor settings?
          */
-        @DoNotSaveToInit
+        @DoNotSaveToInit //
         VERIFIER_FEEDBACK(String.class, "-"),
 
         /**
@@ -206,7 +206,7 @@ public class Setting extends AbstractSetting<Setting.Type> {
         /**
          * Super user message to all clients
          */
-        @DoNotSaveToInit
+        @DoNotSaveToInit //
         SUPER_USER_MESSAGE(String.class, StringUtils.EMPTY),
 
         VISIBLE_FACILITATOR_TABS(FacilitatorTabEnum.class,
@@ -264,11 +264,11 @@ public class Setting extends AbstractSetting<Setting.Type> {
          */
         WORLD_REFERENCE_POINT(Double[].class, "0 0"),
 
-        @DoNotSaveToInit
-        @Deprecated
+        @DoNotSaveToInit //
+        @Deprecated //
         PROJECT_ASSETS_VERSION(Integer.class, "1"),
 
-        @Deprecated
+        @Deprecated //
         WORLD_REFERENCE_POINT_MERC(Double[].class, "DEPRECATED"),
 
         WATER_HEIGHT(Double.class, "" + NO_WATER_HEIGHT_SET),
@@ -280,7 +280,7 @@ public class Setting extends AbstractSetting<Setting.Type> {
         /**
          * Beamer active item maplink
          */
-        @DoNotSaveToInit
+        @DoNotSaveToInit //
         BEAMER_MAPLINK(MapLink.class, MapLink.INDICATORS.name()),
 
         ;
@@ -314,7 +314,7 @@ public class Setting extends AbstractSetting<Setting.Type> {
 
     public static final int DEFAULT_SURROUNDING_EXTEND = 500;
 
-    public static final int MAX_MAP_SIZE = 20000;
+    public static final int MAX_MAP_SIZE = 50000;
 
     public static final String EXCEL_DIR = "Excel/";
 

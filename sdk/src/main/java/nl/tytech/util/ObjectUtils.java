@@ -76,8 +76,7 @@ public class ObjectUtils {
                 return null;
             }
 
-            final Constructor<T> constructor = classz.getConstructor(parameters);
-            return constructor.newInstance(values);
+            return newInstanceForArgs(classz, values);
 
         } catch (Exception exp) {
 
@@ -248,9 +247,24 @@ public class ObjectUtils {
             }
             Class<?>[] parameterTypes = new Class<?>[args.length];
             for (int i = 0; i < args.length; i++) {
-                Object arg = args[i];
-                parameterTypes[i] = arg.getClass();
+                parameterTypes[i] = args[i].getClass();
             }
+
+            constructorloop: for (Constructor<?> constructor : classz.getConstructors()) {
+
+                Class<?>[] paramClasses = constructor.getParameterTypes();
+                if (parameterTypes.length != paramClasses.length) {
+                    continue constructorloop;
+                }
+
+                for (int i = 0; i < paramClasses.length; ++i) {
+                    if (!(paramClasses[i].isAssignableFrom(parameterTypes[i]))) {
+                        continue constructorloop;
+                    }
+                }
+                return (T) constructor.newInstance(args);
+            }
+
             Constructor<T> constructor = classz.getConstructor(parameterTypes);
             return constructor.newInstance(args);
 

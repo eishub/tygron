@@ -4,6 +4,7 @@
  ******************************************************************************/
 package nl.tytech.util;
 
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -107,12 +108,42 @@ public class ZipUtils {
         return null;
     }
 
+    public static String compressToBase64String(Object data) {
+
+        byte[] bytes = compressObject(data);
+        if (bytes == null) {
+            return null;
+        }
+        return Base64.encode(bytes);
+    }
+
     public static void copy(InputStream input, OutputStream output) throws IOException {
         int bytesRead;
         byte[] data = new byte[BUFFER_SIZE];
         while ((bytesRead = input.read(data)) != -1) {
             output.write(data, 0, bytesRead);
         }
+    }
+
+    /**
+     * Decompress object from a base 64 string using GZIP.
+     * @param data
+     * @return
+     */
+    public static <T> T decompressBase64String(final String data) {
+
+        if (!StringUtils.containsData(data)) {
+            return null;
+        }
+
+        try {
+            byte[] bytes = Base64.decode(data);
+            // call normal byte decompres
+            return decompressObject(new ByteArrayInputStream(bytes));
+        } catch (Exception e) {
+            TLogger.exception(e);
+        }
+        return null;
     }
 
     @SuppressWarnings("unchecked")

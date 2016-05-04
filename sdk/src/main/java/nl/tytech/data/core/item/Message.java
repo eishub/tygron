@@ -18,7 +18,7 @@ import nl.tytech.util.ObjectUtils;
 import nl.tytech.util.StringUtils;
 
 /**
- * Message
+ * Message 
  * <p>
  * Message is a letter sent from one stakeholder (sender) to another stakeholder (receiver).
  * <p>

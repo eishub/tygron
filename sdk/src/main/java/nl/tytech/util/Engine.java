@@ -15,12 +15,12 @@ public class Engine {
     /**
      * Clients using API/SDK are compatible on this version level
      */
-    public final static String VERSION_API_COMPATIBLE = "2016.4.1";
+    public final static String VERSION_API_COMPATIBLE = "2016.5.0";
 
     /**
      * Hotfix version, no breaking API/SDK changes here
      */
-    private final static int HOTFIX = 3;
+    private final static int HOTFIX = 0;
 
     /**
      * App version based on API version extended with hotfixes

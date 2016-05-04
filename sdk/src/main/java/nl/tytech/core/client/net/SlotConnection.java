@@ -170,8 +170,10 @@ public class SlotConnection {
                             EventManager.fire(connectionID, ConnectionEvent.FIRST_UPDATE_EVENT_FINISHED, this);
                         }
                     }));
-                    if(updater == this){
-                    	firstConnection = false;
+                    // (Frank) To prevent a racing condition with disconnect,
+                    // since firstConnection is used as a control variable...
+                    if (updater == this) {
+                        firstConnection = false;
                     }
                 } else {
                     // wait for update
@@ -410,6 +412,7 @@ public class SlotConnection {
         // disconnect updater thread
         killUpdater();
         setState(Network.ClientConnectionState.DISCONNECTING, true);
+        status.deactivate();
 
         Integer slotID = SettingsManager.getServerSlotID(connectionID);
         String clientToken = SettingsManager.getClientToken(connectionID);
@@ -431,8 +434,7 @@ public class SlotConnection {
         SettingsManager.setClientToken(connectionID, StringUtils.randomToken());
 
         // create new status
-        Network.AppType oldSubscription = status.getAppType();
-        status = new Status(oldSubscription);
+        status = new Status(status.getAppType());
         // give new status to event manager
         EventManager.setStatus(this.connectionID, status);
 
@@ -628,8 +630,8 @@ public class SlotConnection {
         /**
          * Create target URL
          */
-        this.connectionTarget = "https://" + serverAddress
-                + (Network.PortSetting.SSL_PORT == 443 ? "" : ":" + Network.PortSetting.SSL_PORT) + "/api/slots/" + serverSlotID + "/";
+        this.connectionTarget = "https://" + serverAddress + (Network.PortSetting.SSL_PORT == 443 ? "" : ":" + Network.PortSetting.SSL_PORT)
+                + "/api/slots/" + serverSlotID + "/";
 
     }
 

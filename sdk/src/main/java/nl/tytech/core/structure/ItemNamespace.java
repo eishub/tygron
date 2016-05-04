@@ -19,6 +19,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.Vector;
+import com.vividsolutions.jts.geom.GeometryCollection;
+import com.vividsolutions.jts.geom.MultiLineString;
+import com.vividsolutions.jts.geom.MultiPolygon;
+import com.vividsolutions.jts.geom.Point;
+import com.vividsolutions.jts.geom.Polygon;
 import nl.tytech.core.event.Event.EventTypeEnum;
 import nl.tytech.core.item.annotations.EventIDField;
 import nl.tytech.core.item.annotations.EventParamData;
@@ -38,11 +43,6 @@ import nl.tytech.util.StringUtils;
 import nl.tytech.util.color.TColor;
 import nl.tytech.util.jts.EmptyMultiPolygon;
 import nl.tytech.util.logger.TLogger;
-import com.vividsolutions.jts.geom.GeometryCollection;
-import com.vividsolutions.jts.geom.MultiLineString;
-import com.vividsolutions.jts.geom.MultiPolygon;
-import com.vividsolutions.jts.geom.Point;
-import com.vividsolutions.jts.geom.Polygon;
 
 /**
  * ItemNamespace
@@ -76,9 +76,9 @@ public class ItemNamespace {
     /**
      * Only these classes and ENUMS are allowed for event parameters. Makes it easier for JSON.
      */
-    private static final List<Class<?>> supportedServerEventClasses = Arrays.asList(new Class<?>[] { String.class, Boolean.class,
-            Integer.class, Long.class, Double.class, TColor.class, Point.class, MultiPolygon.class, GeometryCollection.class,
-            CodedEvent.class });
+    private static final List<Class<?>> supportedServerEventClasses = Arrays
+            .asList(new Class<?>[] { String.class, Boolean.class, Integer.class, Long.class, Double.class, TColor.class, Point.class,
+                    MultiPolygon.class, GeometryCollection.class, CodedEvent.class });
 
     /**
      * Adds the classes of the given package name to the Itemspace.
@@ -126,16 +126,8 @@ public class ItemNamespace {
      * @param field
      * @return
      */
-    public static Object getDefaulFieldValue(Object object, Field field) {
-        try {
-            field.setAccessible(true);
-            Class<?> classz = object.getClass();
-            Object newObject = classz.newInstance();
-            return field.get(newObject);
-        } catch (Exception e) {
-            TLogger.exception(e);
-        }
-        return null;
+    public static Object getDefaultFieldValue(Object object, Field field) {
+        return SingletonHolder.INSTANCE._getDefaultFieldValue(object, field);
     }
 
     /**
@@ -175,6 +167,8 @@ public class ItemNamespace {
     public final static boolean isLeaf(final Class<?> classz) {
         return SingletonHolder.INSTANCE._isLeaf(classz);
     }
+
+    private final Map<Field, Object> defaultObjects = new HashMap<>();
 
     /**
      * Mapping of the XML fields.
@@ -307,9 +301,9 @@ public class ItemNamespace {
                     for (Field field : classFields) {
                         Class<?> fieldClass = field.getType();
                         if (!reverse.containsKey(fieldClass)) {
-                            TLogger.showstopper("Failed to add class: " + classz.getSimpleName() + " to Item namespace. The field: "
-                                    + field.getName() + " has a class: " + fieldClass.getSimpleName()
-                                    + " that is not in the Item namespace.");
+                            TLogger.showstopper(
+                                    "Failed to add class: " + classz.getSimpleName() + " to Item namespace. The field: " + field.getName()
+                                            + " has a class: " + fieldClass.getSimpleName() + " that is not in the Item namespace.");
                         }
                     }
                 }
@@ -352,7 +346,7 @@ public class ItemNamespace {
 
         /**
          * No more floats allowed here
-         * */
+         */
         if (Float.class.getSimpleName().equals(simpleName)) {
             return Double.class;
         }
@@ -370,6 +364,21 @@ public class ItemNamespace {
             return null;
         }
         return mapping.get(simpleName);
+    }
+
+    private synchronized Object _getDefaultFieldValue(Object object, Field field) {
+
+        if (!defaultObjects.containsKey(field)) {
+            try {
+                field.setAccessible(true);
+                Class<?> classz = object.getClass();
+                Object newObject = classz.newInstance();
+                defaultObjects.put(field, field.get(newObject));
+            } catch (Exception e) {
+                TLogger.exception(e);
+            }
+        }
+        return defaultObjects.get(field);
     }
 
     /**
@@ -704,9 +713,9 @@ public class ItemNamespace {
             // cannot have other items here
             if (Item.class.isAssignableFrom(fieldClass)) {
 
-                TLogger.showstopper("Failed to add class: " + classz.getSimpleName()
-                        + " to Item namespace. Cannot link directly to other Item: " + field.getType().getSimpleName()
-                        + ". Please use the ID of the Item instead.");
+                TLogger.showstopper(
+                        "Failed to add class: " + classz.getSimpleName() + " to Item namespace. Cannot link directly to other Item: "
+                                + field.getType().getSimpleName() + ". Please use the ID of the Item instead.");
                 return false;
             }
 
@@ -744,9 +753,9 @@ public class ItemNamespace {
             if (field.isAnnotationPresent(ItemIDField.class)) {
                 Class<?> type = field.getType();
                 if (type.equals(int.class)) {
-                    TLogger.showstopper("Failed to add class: " + classz.getSimpleName()
-                            + " to Item namespace. The ItemIDField annotation at field: " + field.getName()
-                            + " is only allowed for Integer's, not for an int.");
+                    TLogger.showstopper(
+                            "Failed to add class: " + classz.getSimpleName() + " to Item namespace. The ItemIDField annotation at field: "
+                                    + field.getName() + " is only allowed for Integer's, not for an int.");
                     return false;
                 }
                 if (!type.equals(Integer.class)) {
@@ -788,8 +797,9 @@ public class ItemNamespace {
                 // if not a list stop!...
                 List<Class<?>> interfaces = ObjectUtils.getInterfaces(type);
                 if (!interfaces.contains(List.class)) {
-                    TLogger.showstopper("Failed to add class: " + classz.getSimpleName()
-                            + " to Item namespace. The ClassList annotation at field: " + field.getName() + " is only allowed List fields.");
+                    TLogger.showstopper(
+                            "Failed to add class: " + classz.getSimpleName() + " to Item namespace. The ClassList annotation at field: "
+                                    + field.getName() + " is only allowed List fields.");
                     return false;
                 }
             }

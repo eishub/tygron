@@ -21,11 +21,11 @@ public class ZoomLevel extends EnumOrderedItem<ZoomLevel.Type> {
 
         PLAN(new Vector3d(0, 1750, 1), new Vector3d(0, 0, 0), new Vector3d(0, 0, -1), false, 600f, 0, 0.86f, false, 10),
 
-        LOCAL(new Vector3d(0, 240, 200), new Vector3d(0, -30, 0), new Vector3d(0, 1, 0), true, 540f, 250.0f, 0.86f, true, 2),
+        LOCAL(new Vector3d(0, 240, 200), new Vector3d(0, -30, 0), new Vector3d(0, 1, 0), true, 540f, 250.0f, 0.86f, true, 10),
 
-        STREET(new Vector3d(0, 240, 230), new Vector3d(0, -30, 0), new Vector3d(0, 1, 0), true, 130f, 150.0f, 0.7f, true, 1),
+        STREET(new Vector3d(0, 240, 230), new Vector3d(0, -30, 0), new Vector3d(0, 1, 0), true, 130f, 150.0f, 0.7f, true, 10),
 
-        MEDIUMSTREET(new Vector3d(0, 130, 110), new Vector3d(0, -30, 0), new Vector3d(0, 1, 0), true, 30f, 150.0f, 0.5f, true, 1),
+        MEDIUMSTREET(new Vector3d(0, 130, 110), new Vector3d(0, -30, 0), new Vector3d(0, 1, 0), true, 30f, 150.0f, 0.5f, true, 5),
 
         CLOSESTREET(new Vector3d(0, 55, 110), new Vector3d(0, -10, 0), new Vector3d(0, 1, 0), true, 18f, 150.0f, 0.45f, true, 1),
 
@@ -42,6 +42,7 @@ public class ZoomLevel extends EnumOrderedItem<ZoomLevel.Type> {
         private Double defaultInPlaneDeceleration = 0d;
 
         private boolean zoomToMouse;
+        @Deprecated
         private double viewBoxHeight;
         private double nearplane;
 
@@ -84,6 +85,7 @@ public class ZoomLevel extends EnumOrderedItem<ZoomLevel.Type> {
             return nearplane;
         }
 
+        @Deprecated
         public double getViewBoxHeight() {
             return viewBoxHeight;
         }
@@ -133,6 +135,7 @@ public class ZoomLevel extends EnumOrderedItem<ZoomLevel.Type> {
     @XMLValue
     private Double inPlaneDeceleration;
 
+    @Deprecated
     @XMLValue
     private Double viewBoxHeight;
 
@@ -210,6 +213,7 @@ public class ZoomLevel extends EnumOrderedItem<ZoomLevel.Type> {
         return up;
     }
 
+    @Deprecated
     public Double getViewBoxHeight() {
         if (viewBoxHeight == null) {
             viewBoxHeight = Type.VALUES[this.getID()].getViewBoxHeight();

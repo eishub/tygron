@@ -7,6 +7,8 @@ package nl.tytech.data.engine.item;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import com.vividsolutions.jts.geom.MultiPolygon;
+import com.vividsolutions.jts.geom.Point;
 import nl.tytech.core.item.annotations.ItemIDField;
 import nl.tytech.core.item.annotations.XMLValue;
 import nl.tytech.core.net.serializable.MapLink;
@@ -18,8 +20,6 @@ import nl.tytech.data.engine.item.ClientWord.ClientTerms;
 import nl.tytech.data.engine.serializable.MapType;
 import nl.tytech.util.JTSUtils;
 import nl.tytech.util.StringUtils;
-import com.vividsolutions.jts.geom.MultiPolygon;
-import com.vividsolutions.jts.geom.Point;
 
 /**
  * Log of an action performed by participant or system
@@ -63,6 +63,9 @@ public class ActionLog extends Item {
     @XMLValue
     private String subject = StringUtils.EMPTY;
 
+    @XMLValue
+    private Double budget = null;
+
     public ActionLog() {
     }
 
@@ -89,6 +92,10 @@ public class ActionLog extends Item {
             return null;
         }
         return after;
+    }
+
+    public Double getBudget() {
+        return budget;
     }
 
     public List<Integer> getBuildingIDs() {
@@ -198,6 +205,10 @@ public class ActionLog extends Item {
 
     public void setBeforeScore(Indicator indicator) {
         scoreBefore.put(indicator.getID(), indicator.getValue(MapType.MAQUETTE));
+    }
+
+    public void setBudget(Double budget) {
+        this.budget = budget;
     }
 
     public void setItem(MapLink mapLink, Integer itemID) {

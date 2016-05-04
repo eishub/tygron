@@ -5,14 +5,17 @@
 package nl.tytech.data.core.item;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
+import com.vividsolutions.jts.geom.MultiPolygon;
+import com.vividsolutions.jts.io.WKTReader;
 import nl.tytech.core.item.annotations.XMLValue;
 import nl.tytech.util.JTSUtils;
 import nl.tytech.util.StringUtils;
 import nl.tytech.util.color.TColor;
 import nl.tytech.util.logger.TLogger;
-import com.vividsolutions.jts.geom.MultiPolygon;
-import com.vividsolutions.jts.io.WKTReader;
 
 /**
  * Setting
@@ -90,26 +93,25 @@ public abstract class AbstractSetting<E extends Enum<E>> extends EnumOrderedItem
         }
     }
 
-    public final <F extends Enum<F>> List<F> getEnumListValue(Class<F> type) {
+    public final <F extends Enum<F>> Collection<F> getEnumCollection(Class<F> type) {
 
         try {
             final String[] split = StringUtils.SEPARATOR.split(getValue());
-            List<F> list = new ArrayList<>();
+            Set<F> set = new LinkedHashSet<>();
             for (int i = 0; i < split.length; i++) {
                 if (!split[i].equals(StringUtils.EMPTY) && !split[i].equals(StringUtils.WHITESPACE)) {
                     try {
                         F item = Enum.valueOf(type, split[i]);
-
                         if (item != null) {
-                            list.add(item);
+                            set.add(item);
                         }
                     } catch (IllegalArgumentException e) {
-                        TLogger.warning("XML contains an enum op type [" + type.getSimpleName() + "] with value [" + split[i]
+                        TLogger.warning("Setting contains an enum op type [" + type.getSimpleName() + "] with value [" + split[i]
                                 + "], but this value is not valid.");
                     }
                 }
             }
-            return list;
+            return set;
         } catch (Exception exp) {
             TLogger.exception(exp);
             return null;
@@ -208,6 +210,15 @@ public abstract class AbstractSetting<E extends Enum<E>> extends EnumOrderedItem
         this.value = String.valueOf(value);
     }
 
+    public <T extends Enum<?>> void setValue(Collection<T> collection) {
+
+        StringBuffer data = new StringBuffer();
+        for (T e : collection) {
+            data.append(e.name() + StringUtils.WHITESPACE);
+        }
+        this.value = data.toString();
+    }
+
     public final void setValue(final double[] value) {
 
         StringBuffer data = new StringBuffer();
@@ -226,15 +237,6 @@ public abstract class AbstractSetting<E extends Enum<E>> extends EnumOrderedItem
         StringBuffer data = new StringBuffer();
         for (int valueItem : value) {
             data.append(valueItem + StringUtils.WHITESPACE);
-        }
-        this.value = data.toString();
-    }
-
-    public <T extends Enum<?>> void setValue(List<T> list) {
-
-        StringBuffer data = new StringBuffer();
-        for (T e : list) {
-            data.append(e.name() + StringUtils.WHITESPACE);
         }
         this.value = data.toString();
     }

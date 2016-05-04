@@ -208,8 +208,12 @@ public abstract class StringUtils {
         return s.substring(0, 1).toUpperCase() + s.substring(1);
     }
 
-    public static String capitalizeWithSpacedUnderScores(String s) {
-        String[] data = s.split(UNDER_SCORE);
+    public static String capitalizeWithSpacedUnderScores(String string) {
+
+        if (string == null) {
+            return null;
+        }
+        String[] data = string.split(UNDER_SCORE);
         StringBuffer result = new StringBuffer();
         for (String part : data) {
             result.append(StringUtils.capitalize(part));

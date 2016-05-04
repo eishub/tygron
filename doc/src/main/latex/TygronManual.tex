@@ -1,0 +1,111 @@
+%% Manual for the environment made by the group Tygron connect.
+
+\documentclass[english,11pt]{article}		
+
+\usepackage{hyperref}
+\usepackage{caption}
+\usepackage{tabularx}
+\bibliography{literatur} 
+
+\title{Tygron Environment \\ Guide}
+\author{W.Pasman}
+\date{\today}
+
+%%%----------------------------------------------------------
+\begin{document}
+%%%----------------------------------------------------------
+\maketitle
+
+\newpage
+\tableofcontents
+%%%----------------------------------------------------------
+\newpage
+
+\section{Summary}
+
+This document describes the installation and use of the Tygron Environment.
+
+\section{Installation}
+There are multiple ways to install the Tygron environment. 
+\begin{itemize}
+\item When using this with GOAL: use the agents zip file from \url{https://github.com/goalhub/agents/releases}. This zip file contains a ready-to-run example for the Tygron environment. 
+\item When using this with another agent platform: you can download the tygron EIS environment from 
+\url{https://github.com/eishub/tygron/releases} and plug it into your agent platform. 
+\end{itemize}
+
+\section{Settings}
+\subsection{Connecting, Password}
+When the environment "init" function is called, the environment first tries to connect with the Tygron server.
+If the server runs a newer version of the software than supported by the client, the connection will fail right away with a message showing the expected version of the client software. If this happens, please contact the development team to upgrade the software.
+
+If the connection is properly made, the system will prompt for your password. If you enable the "save password" checkbox, your password will be saved and you will not need to re-enter your password the next time. The password is saved in a Java Preferences object for the class "Login".
+
+The environment always runs in planning mode.
+
+The init function takes the following parameters. 
+
+\begin{tabularx}{\textwidth}{lX}
+ name & description. \\
+ MAP & The name of the map to use.  Mandatory. If the map does not exist, a new empty map will be created. \\
+ STAKEHOLDER & The stakeholder to use. Optional. If not set, an unspecified available stakeholder will be selected. \\
+ SLOT &  The slot number to use.  Optional.  \\
+\end{tabularx}\\
+
+
+%%%----------------------------------------------------------
+\section{Percepts}
+%%%----------------------------------------------------------
+
+The following percepts are supported. Only changed percepts are sent. Please refer to javadoc of the translators in the package tygronenv.translators for more details about the parameters of the percepts. Only a small part of the incoming events are currently translated. New percepts and translators will be added as needed. Where needed, percept labels are translated to lower case, to avoid ambiguities with Prolog variables.
+\newline
+
+
+\textbf{buildings}\\
+\\
+\begin{tabularx}{\textwidth}{lX}
+ Desription & List of the buildings on the map. \\
+ Syntax & building(Numeral ID, Identifier Name, Category[] Categories, TimeState state) \\
+\end{tabularx}
+\newline
+
+\textbf{settings}\\
+\\
+\begin{tabularx}{\textwidth}{lX}
+ Desription & List of the buildings on the map. \\
+ Syntax & settings(Identifier[] Settings) \\
+\end{tabularx}
+\newline
+
+\textbf{stakeholders}\\
+\\
+\begin{tabularx}{\textwidth}{lX}
+ Desription & List of available stakeholders. \\
+ Syntax & stakeholders(Identifier[] Stakeholders) \\
+\end{tabularx}
+\newline
+
+\textbf{functions}\\
+\\
+\begin{tabularx}{\textwidth}{lX}
+ Desription & List of available functions. \\
+ Syntax & functions(Function[] Functions) \\
+\end{tabularx}
+\newline
+
+
+
+%%%----------------------------------------------------------
+\section{Actions}
+%%%----------------------------------------------------------
+
+Currently all actions in the ParticipantEventType class are supported. Please refer to the javadoc of ParticipantEventType for more details. All action names are translated to lower case, to avoid ambiguities with Prolog variables.
+
+Some more documentation can be found on
+
+\url{http://support.tygron.com/wiki/Software_Development_Kit}
+
+
+
+
+
+\end{document}
