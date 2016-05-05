@@ -50,6 +50,7 @@ public class Login {
 		String user_var = null;
 		String pwd_var = null;
 		BufferedReader in = null;
+		// in app.properties are the username and password as specified through environment variables
 		try {
 			in = new BufferedReader(new FileReader("target/app.properties"));
 		} catch (FileNotFoundException e1) {
@@ -73,6 +74,8 @@ public class Login {
 			e.printStackTrace();
 		}
 		if(user_var == null || user_var.equals("undefined") || pwd_var == null || pwd_var.equals("undefined") ){
+			// user and password information is not gotten through environment variables and if these values
+			// are not saved a inputbox requesting user input will be spawned
 			getCredentials();
 			if (!isSaved) {
 				passPrompt();
@@ -81,6 +84,7 @@ public class Login {
 				saveCredentials();
 			}
 		} else {
+			// the user and password information is inputted through environment variables and these are used
 			ServicesManager.setSessionLoginCredentials(user_var, pwd_var);
 			username = user_var;
 			hashedPass = ServicesManager.fireServiceEvent(UserServiceEventType.GET_MY_HASH_KEY);
