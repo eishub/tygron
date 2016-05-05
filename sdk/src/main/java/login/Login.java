@@ -82,6 +82,7 @@ public class Login {
 			}
 		} else {
 			ServicesManager.setSessionLoginCredentials(user_var, pwd_var);
+			username = user_var;
 			hashedPass = ServicesManager.fireServiceEvent(UserServiceEventType.GET_MY_HASH_KEY);
 			prefs.put(USERNAME, user_var);
 			prefs.put(HASHEDPASS, hashedPass);
