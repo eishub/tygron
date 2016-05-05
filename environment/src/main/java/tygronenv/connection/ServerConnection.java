@@ -1,9 +1,10 @@
 package tygronenv.connection;
 
-import javax.security.auth.login.LoginException;
+import java.io.IOException;
 
-import eis.exceptions.ManagementException;
+import javax.security.auth.login.LoginException;
 import login.Login;
+import eis.exceptions.ManagementException;
 import nl.tytech.core.client.net.ServicesManager;
 import nl.tytech.core.net.Network;
 import nl.tytech.core.net.serializable.ProjectData;
