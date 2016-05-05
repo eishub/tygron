@@ -1,5 +1,5 @@
 language: java
-install: mvn -pl "!doc" install -DskipTests=true -Dmaven.javadoc.skip=true -B -V
-script: mvn -P ci test -Duser="$email" -Dpwd="$password"
+install: mvn -P ci install -DskipTests=true -Dmaven.javadoc.skip=true -B -V
+script: mvn test -Duser="$email" -Dpwd="$password"
 jdk:
 - oraclejdk8
