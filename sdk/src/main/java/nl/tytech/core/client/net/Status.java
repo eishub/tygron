@@ -67,6 +67,11 @@ public class Status implements Lord, ParallelUpdatable {
     private boolean firstTime = true;
 
     /**
+     * Status is allowed to fire events?
+     */
+    private volatile boolean fireEvents = true;
+
+    /**
      * Local versions to be sent to the server for comparison. This is cached.
      */
     private HashMap<MapLink, Integer> versionRequest = null;
@@ -102,6 +107,10 @@ public class Status implements Lord, ParallelUpdatable {
         UpdateManager.addParallel(this);
     }
 
+    protected void deactivate() {
+        fireEvents = false;
+    }
+
     /**
      * Fire a list with the deleted ID's
      *
@@ -128,7 +137,9 @@ public class Status implements Lord, ParallelUpdatable {
             return;
         }
         // fire using manager
-        EventManager.fire(connectionID, ItemManipulationEventType.DELETE_ITEMS, this, mapLink, deletedIDs);
+        if (fireEvents) {
+            EventManager.fire(connectionID, ItemManipulationEventType.DELETE_ITEMS, this, mapLink, deletedIDs);
+        }
     }
 
     private <I extends Item> void fireListUpdateEvent(final MapLink type, final I[] argUpdatedList) {
@@ -141,7 +152,9 @@ public class Status implements Lord, ParallelUpdatable {
         final List<I> updatedList = argUpdatedList == null ? new ArrayList<I>() : Arrays.asList(argUpdatedList);
 
         // fire using manager
-        EventManager.fire(connectionID, type, this, getMap(type), updatedList);
+        if (fireEvents) {
+            EventManager.fire(connectionID, type, this, getMap(type), updatedList);
+        }
     }
 
     /**
@@ -366,28 +379,28 @@ public class Status implements Lord, ParallelUpdatable {
                 }
 
                 SliceManager.exec(() -> {
-                    if (firstTime) {
+                    if (firstTime && fireEvents) {
                         EventManager.fire(connectionID, ConnectionEvent.FIRST_UPDATE_STARTED, this);
                     }
 
                     // long start = System.currentTimeMillis();
                     // fire events
-                        for (int i = 0; i < mapLinks.length; i++) {
-                            MapLink type = mapLinks[i];
-                            Item[] update = serverVersion.getItems().get(type.name());
-                            Item[] deleted = serverVersion.getDeletes().get(type.name());
+                    for (int i = 0; i < mapLinks.length; i++) {
+                        MapLink type = mapLinks[i];
+                        Item[] update = serverVersion.getItems().get(type.name());
+                        Item[] deleted = serverVersion.getDeletes().get(type.name());
 
-                            // fire event when updated and when items are deleted
-                            if (firstTime || update != null || deleted != null) {
-                                fireListUpdateEvent(type, (I[]) update);
-                            }
-                            // for deletes also fire deleted item event
-                            if (deleted != null) {
-                                fireListDeleteEvent(type, (I[]) deleted);
-                            }
+                        // fire event when updated and when items are deleted
+                        if (firstTime || update != null || deleted != null) {
+                            fireListUpdateEvent(type, (I[]) update);
                         }
-                        firstTime = false;
-                    });
+                        // for deletes also fire deleted item event
+                        if (deleted != null) {
+                            fireListDeleteEvent(type, (I[]) deleted);
+                        }
+                    }
+                    firstTime = false;
+                });
                 // TLogger.info("Fired updates in " + (System.currentTimeMillis() - start) + " ms.");
             }
         } catch (RuntimeException e) {

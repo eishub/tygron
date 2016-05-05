@@ -153,7 +153,7 @@ public enum ParticipantEventType implements SessionEventTypeEnum, StartWithMySta
             "Type of transfer", "Money giving Stakeholder ID", "Money asking Stakeholder ID", "Message text", "Amount" })
     @EventIDField(links = { "STAKEHOLDERS", "STAKEHOLDERS", "STAKEHOLDERS" }, params = { 0, 2, 3 })
     MONEY_TRANSFER_ASK(Integer.class, MoneyTransfer.Type.class, Integer.class, Integer.class, String.class, Double.class),
-
+ 
     @EventParamData(editor = true, desc = "Give money from one stakeholder to another", params = { "Initiating Stakeholder ID",
             "Type of transfer", "Money giving Stakeholder ID", "Money receiving Stakeholder ID", "Message text", "Amount" })
     @EventIDField(links = { "STAKEHOLDERS", "STAKEHOLDERS", "STAKEHOLDERS" }, params = { 0, 2, 3 })

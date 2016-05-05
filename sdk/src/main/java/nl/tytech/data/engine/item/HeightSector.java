@@ -4,6 +4,13 @@
  ******************************************************************************/
 package nl.tytech.data.engine.item;
 
+import java.io.ByteArrayInputStream;
+import java.lang.ref.WeakReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.vividsolutions.jts.geom.Envelope;
+import com.vividsolutions.jts.geom.MultiPolygon;
+import com.vividsolutions.jts.geom.Point;
+import com.vividsolutions.jts.geom.Polygon;
 import nl.tytech.core.item.annotations.XMLValue;
 import nl.tytech.core.net.serializable.MapLink;
 import nl.tytech.core.net.serializable.PolygonItem;
@@ -14,11 +21,7 @@ import nl.tytech.util.JTSUtils;
 import nl.tytech.util.MathUtils;
 import nl.tytech.util.ObjectUtils;
 import nl.tytech.util.StringUtils;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.vividsolutions.jts.geom.Envelope;
-import com.vividsolutions.jts.geom.MultiPolygon;
-import com.vividsolutions.jts.geom.Point;
-import com.vividsolutions.jts.geom.Polygon;
+import nl.tytech.util.ZipUtils;
 
 /**
  * HeightSector
@@ -101,8 +104,17 @@ public class HeightSector extends UniqueNamedItem implements PolygonItem {
     @XMLValue
     private float[] maquette = new float[0];
 
+    /**
+     * Used during world creation to calculate building height: uncompressed and weak data
+     */
     @JsonIgnore
-    private transient float[] buildingHeight = new float[0];
+    private transient WeakReference<float[]> rawBuildingHeight = new WeakReference<>(null);
+
+    /**
+     * Used during world creation to calculate building height: compressed data
+     */
+    @JsonIgnore
+    private transient byte[] compressedBuildingHeight = new byte[0];
 
     @XMLValue
     private MultiPolygon square;
@@ -185,7 +197,16 @@ public class HeightSector extends UniqueNamedItem implements PolygonItem {
     public float[] getData(MapType mapType, boolean building) {
 
         if (building) {
-            return this.buildingHeight;
+            if (compressedBuildingHeight.length == 0) {
+                return new float[0];
+            }
+            float[] result = rawBuildingHeight.get();
+            if (result == null) {
+                // load from compressed data
+                result = ZipUtils.decompressObject(new ByteArrayInputStream(compressedBuildingHeight));
+                rawBuildingHeight = new WeakReference<>(result);
+            }
+            return result;
         }
 
         // current return current
@@ -367,11 +388,8 @@ public class HeightSector extends UniqueNamedItem implements PolygonItem {
     }
 
     public int getWidthPoints(boolean building) {
-        if (building) {
-            return (int) Math.round((buildingHeight.length == 0 ? 0 : Math.sqrt(buildingHeight.length)));
-        } else {
-            return (int) Math.round((current.length == 0 ? 0 : Math.sqrt(current.length)));
-        }
+        float[] data = getData(null, building);
+        return (int) Math.round((data.length == 0 ? 0 : Math.sqrt(data.length)));
     }
 
     private HeightSquare getXYArray(double wx, double wy) {
@@ -430,7 +448,8 @@ public class HeightSector extends UniqueNamedItem implements PolygonItem {
     public void setBaseHeightData(float[] data, boolean includeBuilding) {
 
         if (includeBuilding) {
-            this.buildingHeight = data;
+            this.compressedBuildingHeight = ZipUtils.compressObject(data);
+            this.rawBuildingHeight = new WeakReference<>(null);
         } else {
             this.current = data;
             this.maquette = new float[0];

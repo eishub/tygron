@@ -26,6 +26,8 @@ public enum PopupModelType {
     //
     CONSTRUCTING("constructing"),
     //
+    ELEVATION("terrain_elevation"),
+    //
     DECLINED("declined"),
     //
     DEMOLISHING("demolishing"),
