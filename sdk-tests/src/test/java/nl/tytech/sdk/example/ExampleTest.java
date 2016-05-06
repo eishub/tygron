@@ -4,7 +4,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
-
 import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runners.MethodSorters;
@@ -67,15 +66,8 @@ public class ExampleTest {
 
 		String result = ServicesManager.testServerAPIConnection();
 		assertNull(result, result);
-
-		/**
-		 * Enter user password
-		 */
-
 		Login login = new Login();
-
 		User user = ServicesManager.getMyUserAccount();
-
 		assertNotNull(user);
 		assertEquals(user.getUserName(), login.getUserName());
 

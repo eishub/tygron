@@ -3,6 +3,8 @@ configuration.cfg
 
 *.class
 
+*.properties
+
 .metadata/*
 
 # Mobile Tools for Java (J2ME)
