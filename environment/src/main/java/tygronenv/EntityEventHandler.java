@@ -16,12 +16,15 @@ import nl.tytech.core.event.Event.EventTypeEnum;
 import nl.tytech.core.event.EventListenerInterface;
 import nl.tytech.core.net.Network;
 import nl.tytech.core.net.serializable.MapLink;
+import nl.tytech.core.structure.ClientItemMap;
 import nl.tytech.core.structure.ItemMap;
 import nl.tytech.data.core.item.Item;
 import nl.tytech.data.engine.item.Building;
 import nl.tytech.data.engine.item.Function;
 import nl.tytech.data.engine.item.Setting;
 import nl.tytech.data.engine.item.Stakeholder;
+import tygronenv.translators.J2Building;
+import tygronenv.translators.J2ExtBuilding;
 
 /**
  * Listen to entity events and store them till they are needed. Thread safe
@@ -93,7 +96,7 @@ public class EntityEventHandler implements EventListenerInterface {
 				createPercepts(event.<ItemMap<Function>> getContent(MapLink.COMPLETE_COLLECTION), type);
 				break;
 			case BUILDINGS:
-				createPercepts(event.<ItemMap<Building>> getContent(MapLink.COMPLETE_COLLECTION), type);
+				createBuildingPercepts(event.<ItemMap<Building>> getContent(MapLink.COMPLETE_COLLECTION), type);
 				break;
 			case SETTINGS:
 				createPercepts(event.<ItemMap<Setting>> getContent(MapLink.COMPLETE_COLLECTION), type);
@@ -101,13 +104,56 @@ public class EntityEventHandler implements EventListenerInterface {
 			default:
 				System.out.println("WARNING. EntityEventHandler received unknown event:" + event);
 				return;
-
 			}
 		} else if (type == Network.ConnectionEvent.FIRST_UPDATE_FINISHED) {
 			// entity is ready to run! Report to EIS
 			entity.notifyReady(ENTITY);
 		}
 	}
+
+    /**
+     * Create percepts pertaining to buildings contained in a ClientItemMap array and add them to the
+     * {@link #collectedPercepts}.
+     *
+	 * @param itemMap
+	 *            list of ClientItemMap elements.
+	 * @param type
+	 *            the type of elements in the map.
+     */
+    private <T extends Building> void createBuildingPercepts(ItemMap<T> itemMap, EventTypeEnum type) {
+
+        List<Percept> percepts = new ArrayList<>();
+        String typeString = type.name().toLowerCase();
+        try {
+            percepts.add(createBuildingPercept(new ArrayList<>(itemMap.values()), typeString));
+        } catch (TranslationException e) {
+            e.printStackTrace();
+        }
+        String extTypeString = "ext" + typeString;
+        try {
+            // Set translator to the extended building translator to get more info in the percept
+            translator.registerJava2ParameterTranslator(new J2ExtBuilding());
+            percepts.add(createBuildingPercept(new ArrayList<>(itemMap.values()), extTypeString));
+        } catch (TranslationException e) {
+            e.printStackTrace();
+        }
+        // Reset translator to use the standard building translator.
+        translator.registerJava2ParameterTranslator(new J2Building());
+        addPercepts(type, percepts);
+    }
+
+    /**
+     * Method to create A Building percept based on the given \<T\>
+     * @param items all items that should be put in the percept
+     * @param type Lowercase string representation of the event type
+     * @param <T> The type of the items in the list. Should extend {@link Building}
+     * @return a new {@link Percept} containing all the info from The items
+     * @throws TranslationException
+     */
+    private <T extends Building> Percept createBuildingPercept(List<T> items, String type) throws TranslationException {
+        Parameter[] parameters = translator.translate2Parameter(items);
+        return new Percept(type, parameters);
+    }
 
 	/**
 	 * Create percepts contained in a ClientItemMap array and add them to the
@@ -118,7 +164,6 @@ public class EntityEventHandler implements EventListenerInterface {
 	 * @param type
 	 *            the type of elements in the map.
 	 */
-
 	private <T extends Item> void createPercepts(ItemMap<T> itemMap, EventTypeEnum type) {
 		ArrayList<T> items = new ArrayList<T>(itemMap.values());
 		List<Percept> percepts = new ArrayList<Percept>();
