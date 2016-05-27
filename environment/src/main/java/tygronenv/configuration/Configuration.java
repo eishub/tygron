@@ -20,6 +20,7 @@ public class Configuration {
 	private Set<String> stakeholders = new HashSet<String>();
 	private String project = null;
 	private Integer slot = null;
+	private String domain = null;
 	private final Translator translator = Translator.getInstance();
 
 	/**
@@ -49,6 +50,7 @@ public class Configuration {
 			ParamEnum param = translator.translate2Java(new Identifier(entry.getKey()), ParamEnum.class);
 			switch (param) {
 			case STAKEHOLDERS:
+				System.out.println(entry.getValue());
 				setStakeholders(paramlist2Set(entry.getValue()));
 				break;
 			case PROJECT:
@@ -57,6 +59,9 @@ public class Configuration {
 			case SLOT:
 				setSlot(translator.translate2Java(entry.getValue(), Integer.class));
 				break;
+            case DOMAIN:
+                setDomain(translator.translate2Java(entry.getValue(), String.class));
+                break;
 			default:
 				break;
 			}
@@ -138,4 +143,11 @@ public class Configuration {
 		return slot;
 	}
 
+    public void setDomain(String domain) {
+        this.domain = domain;
+    }
+
+    public String getDomain() {
+        return domain;
+    }
 }

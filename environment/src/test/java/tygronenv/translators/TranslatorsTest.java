@@ -17,6 +17,7 @@ import eis.iilang.Parameter;
 import nl.tytech.util.JTSUtils;
 
 public class TranslatorsTest {
+
 	Translator translatorfactory = Translator.getInstance();
 
 	@Test
@@ -71,5 +72,4 @@ public class TranslatorsTest {
 		assertEquals(1.0, c.getOrdinate(0), 0.0001);
 		assertEquals(2.0, c.getOrdinate(1), 0.0001);
 	}
-
 }
