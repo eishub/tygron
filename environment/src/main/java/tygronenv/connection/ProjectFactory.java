@@ -25,15 +25,17 @@ public class ProjectFactory {
 
 	/**
 	 * Join existing project.
-	 * 
+	 *
 	 * @param name
 	 *            the project name to join/make.
-	 * @return project with given name, or null if no project with given name
+     * @param domain
+     *            the domain that you want to find projects on.
+	 * @return project with given name on the given domain, or null if no project with given name
 	 *         exists.
 	 * @throws ManagementException
 	 */
-	public ProjectData getProject(String name) throws ManagementException {
-		ProjectData[] projects = ServicesManager.fireServiceEvent(IOServiceEventType.GET_MY_STARTABLE_PROJECTS);
+	public ProjectData getProject(String name, String domain) throws ManagementException {
+		ProjectData[] projects = ServicesManager.fireServiceEvent(IOServiceEventType.GET_DOMAIN_STARTABLE_PROJECTS, domain);
 		if (projects != null) {
 			for (ProjectData existing : projects) {
 				if (existing.getFileName().equals(name)) {
@@ -42,7 +44,29 @@ public class ProjectFactory {
 			}
 		}
 
-		return null;
+		return getProject(name);
+	}
+
+	/**
+	 * Join existing project.
+	 * 
+	 * @param name
+	 *            the project name to join/make.
+	 * @return project with given name, or null if no project with given name
+	 *         exists.
+	 * @throws ManagementException
+	 */
+	public ProjectData getProject(String name) throws ManagementException {
+        ProjectData[] projects = ServicesManager.fireServiceEvent(IOServiceEventType.GET_MY_STARTABLE_PROJECTS);
+        if (projects != null) {
+            for (ProjectData existing : projects) {
+                if (existing.getFileName().equals(name)) {
+                    return ServicesManager.fireServiceEvent(IOServiceEventType.GET_PROJECT_DATA, name);
+                }
+            }
+        }
+
+        return null;
 	}
 
 	/**

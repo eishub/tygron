@@ -22,6 +22,7 @@ import nl.tytech.data.engine.item.ActionLog;
 import nl.tytech.data.engine.item.ActionMenu;
 import nl.tytech.data.engine.item.Building;
 import nl.tytech.data.engine.item.Function;
+import nl.tytech.data.engine.item.Indicator;
 import nl.tytech.data.engine.item.Land;
 import nl.tytech.data.engine.item.PopupData;
 import nl.tytech.data.engine.item.Setting;
@@ -53,7 +54,7 @@ public class EntityEventHandler implements EventListenerInterface {
 	public EntityEventHandler(TygronEntity entity) {
 		this.entity = entity;
 		EventManager.addListener(this, MapLink.STAKEHOLDERS, MapLink.ACTION_MENUS, MapLink.ACTION_LOGS,
-				MapLink.FUNCTIONS, MapLink.BUILDINGS, MapLink.SETTINGS, MapLink.ZONES, MapLink.LANDS, MapLink.POPUPS);
+				MapLink.FUNCTIONS, MapLink.BUILDINGS, MapLink.SETTINGS, MapLink.ZONES, MapLink.LANDS, MapLink.POPUPS, MapLink.INDICATORS);
 		EventManager.addListener(this, Network.ConnectionEvent.FIRST_UPDATE_FINISHED);
 	}
 
@@ -108,6 +109,10 @@ public class EntityEventHandler implements EventListenerInterface {
 			case SETTINGS:
 				createPercepts(event.<ItemMap<Setting>> getContent(MapLink.COMPLETE_COLLECTION), type);
 				break;
+			case INDICATORS:
+				//Creates the indicator/3 percepts.
+				createPercepts(event.<ItemMap<Indicator>> getContent(MapLink.COMPLETE_COLLECTION), type);
+				break;
 			case STAKEHOLDERS:
 				createPercepts(event.<ItemMap<Stakeholder>> getContent(MapLink.COMPLETE_COLLECTION), type);
 				break;
@@ -124,11 +129,13 @@ public class EntityEventHandler implements EventListenerInterface {
 			default:
 				TLogger.warning("EntityEventHandler received unknown event:" + event);
 				return;
-
 			}
 		} else if (type == Network.ConnectionEvent.FIRST_UPDATE_FINISHED) {
 			// entity is ready to run! Report to EIS
 			entity.notifyReady(ENTITY);
+			
+			// remove stakeholders from the listener, so we don't get new percepts of type stakeholders
+			EventManager.removeListener(this, MapLink.STAKEHOLDERS);
 		}
 	}
 
