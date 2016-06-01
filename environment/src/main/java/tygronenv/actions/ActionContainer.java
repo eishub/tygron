@@ -18,7 +18,7 @@ public class ActionContainer extends HashMap<String, CustomAction> {
 	public ActionContainer() {
 		super();
 
-		// Add actions here:
+		// Add custom actions here:
 		addAction(new CounterExample());
 	}
 
