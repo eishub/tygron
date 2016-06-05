@@ -21,6 +21,8 @@ import nl.tytech.core.util.SettingsManager;
 import nl.tytech.data.engine.event.LogicEventType;
 import nl.tytech.data.engine.event.ParticipantEventType;
 import nl.tytech.data.engine.item.Stakeholder;
+import tygronenv.actions.ActionContainer;
+import tygronenv.actions.CustomAction;
 
 /**
  * the 'participant' - a single stakeholder connection. Handles events coming in
@@ -49,6 +51,8 @@ public class TygronEntity {
 	private String intendedStakeholderName;
 
 	private final static Translator translator = Translator.getInstance();
+
+	private ActionContainer customActions = new ActionContainer();
 
 	/**
 	 * Create new Tygron entity. It will report to env when the entity is ready
@@ -185,8 +189,9 @@ public class TygronEntity {
 	 *            2.
 	 * @throws TranslationException
 	 *             if a parameter can not be translated.
+	 * @return a Percept returned by the action, or null.
 	 */
-	public void performAction(Action action) throws TranslationException {
+	public Percept performAction(final Action action) throws TranslationException {
 		/**
 		 * Action is of the form 'BUILDING_PLAN_CONSTRUCTION'(p1,p2,p3...).
 		 * 
@@ -195,16 +200,24 @@ public class TygronEntity {
 				stakeholderID, functionID, floors, roadMultiPolygon);
 				</code>
 		 */
+		String actionName = action.getName().toLowerCase();
+		CustomAction customAction = customActions.get(actionName);
 
-		ParticipantEventType type = getActionType(action.getName());
-		if (type == null) {
-			throw new TranslationException("unknown action " + action.getName());
+		if (customAction != null) {
+			return customAction.call(this, action.getParameters());
+		} else {
+			ParticipantEventType type = getActionType(actionName);
+			if (type == null) {
+				throw new TranslationException("unknown action " + actionName);
+			}
+
+			Object[] arguments = translateParameters(action, stakeholder.getID());
+
+			// call. We ignore the return value.
+			slotConnection.fireServerEvent(true, type, arguments);
+
+			return null;
 		}
-
-		Object[] arguments = translateParameters(action, stakeholder.getID());
-
-		// call. We ignore the return value.
-		slotConnection.fireServerEvent(true, type, arguments);
 	}
 
 	/**
