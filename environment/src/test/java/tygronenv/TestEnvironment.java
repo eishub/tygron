@@ -35,7 +35,16 @@ public class TestEnvironment {
 
 	@Before
 	public void before() {
-		env = new EisEnv();
+		env = createEnvironment();
+	}
+
+	/**
+	 * Factory method that delivers the environment under test
+	 * 
+	 * @return new {@link EisEnv} for testing
+	 */
+	public EisEnv createEnvironment() {
+		return new EisEnv();
 	}
 
 	@After
@@ -65,7 +74,6 @@ public class TestEnvironment {
 	@Test
 	public void testGetStakeHolder() throws ManagementException {
 		Map<String, Parameter> parameters = new HashMap<String, Parameter>();
-		System.out.println(parameters.toString());
 		parameters.put(PROJECT, PROJECTNAME);
 		// parameters.put(STAKEHOLDER, new Identifier("MUNICIPALITY"));
 		parameters.put(STAKEHOLDERS, new ParameterList(new Identifier(MUNICIPALITY)));
