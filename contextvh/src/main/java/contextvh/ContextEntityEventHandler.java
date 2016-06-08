@@ -105,8 +105,8 @@ public class ContextEntityEventHandler extends tygronenv.EntityEventHandler {
                         createPercepts(event.<ItemMap<UpgradeType>>getContent(MapLink.COMPLETE_COLLECTION), type);
                         break;
                     case LANDS:
-        				createPercepts(event.<ItemMap<Land>> getContent(MapLink.COMPLETE_COLLECTION), type);
-        				break;
+                        createPercepts(event.<ItemMap<Land>>getContent(MapLink.COMPLETE_COLLECTION), type);
+                        break;
                     case INDICATORS:
                         createPercepts(event.<ItemMap<Indicator>>getContent(MapLink.COMPLETE_COLLECTION), type);
                         break;
