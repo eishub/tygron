@@ -181,7 +181,7 @@ public class TestEnvironment {
 	public void testSellLand() throws Exception {
 		List<Percept> percepts = connectAndInit();
 		assertNotNull("no initial percepts!", percepts);
-		
+
 		// search some land that we own
 		Parameter landlist = null;
 		for (Percept p : percepts) {
