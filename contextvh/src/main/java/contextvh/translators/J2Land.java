@@ -27,9 +27,11 @@ public class J2Land implements Java2Parameter<Land> {
 
 		ParameterList pl = new ParameterList();
 		ItemMap<Zone> zones = EventManager.getItemMap(MapLink.ZONES);
-		for (Zone zone : zones) {
-			if (zone.getMultiPolygon().intersects(b.getMultiPolygon())) {
-				pl.add(new Numeral(zone.getID()));
+		if (zones != null) {
+			for (Zone zone : zones) {
+				if (zone.getMultiPolygon().intersects(b.getMultiPolygon())) {
+					pl.add(new Numeral(zone.getID()));
+				}
 			}
 		}
 
