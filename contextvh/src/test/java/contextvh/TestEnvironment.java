@@ -1,15 +1,16 @@
 package contextvh;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import org.junit.After;
+import org.junit.Test;
+
 import eis.exceptions.ManagementException;
 import eis.iilang.Identifier;
 import eis.iilang.Parameter;
 import eis.iilang.ParameterList;
-import org.junit.After;
-import org.junit.Test;
 import tygronenv.EisEnv;
-
-import java.util.HashMap;
-import java.util.Map;
 
 public class TestEnvironment extends tygronenv.TestEnvironment{
 
