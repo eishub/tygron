@@ -15,6 +15,7 @@ import nl.tytech.core.net.serializable.MapLink;
 import nl.tytech.core.structure.ItemMap;
 import nl.tytech.data.core.item.Item;
 import nl.tytech.data.engine.item.Indicator;
+import nl.tytech.data.engine.item.Land;
 import nl.tytech.data.engine.item.Stakeholder;
 import nl.tytech.data.engine.item.UpgradeType;
 import tygronenv.EntityEventListener;
@@ -103,6 +104,9 @@ public class ContextEntityEventHandler extends tygronenv.EntityEventHandler {
                     case UPGRADE_TYPES:
                         createPercepts(event.<ItemMap<UpgradeType>>getContent(MapLink.COMPLETE_COLLECTION), type);
                         break;
+                    case LANDS:
+        				createPercepts(event.<ItemMap<Land>> getContent(MapLink.COMPLETE_COLLECTION), type);
+        				break;
                     case INDICATORS:
                         createPercepts(event.<ItemMap<Indicator>>getContent(MapLink.COMPLETE_COLLECTION), type);
                         break;

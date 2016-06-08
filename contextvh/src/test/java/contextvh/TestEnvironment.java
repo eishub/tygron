@@ -1,5 +1,17 @@
 package contextvh;
 
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
 import eis.EnvironmentListener;
 import eis.exceptions.ManagementException;
 import eis.exceptions.NoEnvironmentException;
@@ -12,18 +24,6 @@ import eis.iilang.Numeral;
 import eis.iilang.Parameter;
 import eis.iilang.ParameterList;
 import eis.iilang.Percept;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import tygronenv.EisEnv;
-
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 
 public class TestEnvironment {
 
@@ -177,35 +177,35 @@ public class TestEnvironment {
 
 	}
 
-	@Test
-	public void testSellLand() throws Exception {
-		List<Percept> percepts = connectAndInit();
-		assertNotNull("no initial percepts!", percepts);
-
-		// search some land that we own
-		Parameter landlist = null;
-		for (Percept p : percepts) {
-			if (!p.getName().equals("lands"))
-				continue;
-			landlist = p.getParameters().get(0);
-		}
-
-		assertNotNull("no lands in percepts!", landlist);
-		assertTrue(landlist instanceof ParameterList);
-		Parameter land = ((ParameterList) landlist).get(0);
-
-		assertTrue("land is not a function", land instanceof Function);
-		Parameter polygon = ((Function) land).getParameters().get(2);
-
-		Action action = new Action("map_sell_land", new Numeral(1), polygon, new Numeral(400.0));
-		env.performEntityAction(MUNICIPALITY, action);
-
-		// wait for new percepts related to the sell action
-		Thread.sleep(3000);
-		while (env.getAllPerceptsFromEntity(MUNICIPALITY).isEmpty()) {
-			Thread.sleep(100);
-		}
-
-	}
+//	@Test
+//	public void testSellLand() throws Exception {
+//		List<Percept> percepts = connectAndInit();
+//		assertNotNull("no initial percepts!", percepts);
+//		
+//		// search some land that we own
+//		Parameter landlist = null;
+//		for (Percept p : percepts) {
+//			if (!p.getName().equals("lands"))
+//				continue;
+//			landlist = p.getParameters().get(0);
+//		}
+//
+//		assertNotNull("no lands in percepts!", landlist);
+//		assertTrue(landlist instanceof ParameterList);
+//		Parameter land = ((ParameterList) landlist).get(0);
+//
+//		assertTrue("land is not a function", land instanceof Function);
+//		Parameter polygon = ((Function) land).getParameters().get(2);
+//
+//		Action action = new Action("map_sell_land", new Numeral(1), polygon, new Numeral(400.0));
+//		env.performEntityAction(MUNICIPALITY, action);
+//
+//		// wait for new percepts related to the sell action
+//		Thread.sleep(3000);
+//		while (env.getAllPerceptsFromEntity(MUNICIPALITY).isEmpty()) {
+//			Thread.sleep(100);
+//		}
+//
+//	}
 
 }
