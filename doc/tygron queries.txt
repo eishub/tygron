@@ -1,0 +1,34 @@
+keyword: TQL tygron queryies
+
+Apache poi kan de evaluatie doen van de sheets vanuit java.
+
+
+In excel sheets heb je labels die verwijzen naar een cell (dit is standaard excel functionaliteit)
+
+De tygron engine herkent labels in de excel sheet en doet daar wat mee
+
+SELECT_.. labels worden gequeried door de tygron engine en het resultaat wordt ingevuld in die cell. query taal is NIET algemeen SQL maar iets wat tygron zelf heeft gebakken. Zie hun wiki
+
+
+SELECT_BLA_WHERE_ZONE_IS_0
+SELECT_BLA_WHERE_ZONE_IS_X 
+ dit zet je in de kolom naam 
+ dan vult de tygron engine de rijen onder die kolom in.
+SELECT_BLA_WHERE selecteert alles, dus zonder restrictie van ZONE_IS_
+
+Meer hierover stat in de wiki
+
+Verder zijn er deze labels verplicht: 
+
+CURRENT_SCORE cell moet er zijn en de score 
+
+EXPLANATION cell moet er ook zijn en die bevat html tekst
+
+Verder wordt geen info uit de excel sheet doorgegeven naar de engine
+
+Studenten hebben dus de EXPLANATION cell aangepast 
+
+De studenten geven nu in de EXPLANATION een <hidden> field met computer readable tekst
+
+Deze tekst trekken ze uit de indicator en splitten ze weer zodat ze de benodigde info toch uit de excel sheet kunnen halen. 
+
