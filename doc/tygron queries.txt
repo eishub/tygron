@@ -1,4 +1,6 @@
-keyword: TQL tygron queryies
+losse notitie. Dit moet ergens in een manual komen ofzo.
+
+keywords: TQL tygron queryies, Indicators, Excel sheet
 
 Apache poi kan de evaluatie doen van de sheets vanuit java.
 
