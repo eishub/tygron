@@ -89,7 +89,8 @@ public class EntityEventHandler implements EventListenerInterface {
 				return;
 			}
 			notifyListener1(event);
-		} catch (EntityException e) {
+		} catch (Throwable e) {
+			System.out.println("Caught bug in tygron env");
 			e.printStackTrace(); // can we do more?
 		}
 	}
